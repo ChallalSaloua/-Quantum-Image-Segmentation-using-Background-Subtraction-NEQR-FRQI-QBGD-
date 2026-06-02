@@ -1,0 +1,1 @@
+# -Quantum-Image-Segmentation-using-Background-Subtraction-NEQR-FRQI-QBGD-
