@@ -1,0 +1,346 @@
+\documentclass[12pt,a4paper]{report}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{float}
+
+\begin{document}
+	
+	\tableofcontents
+	
+	\chapter{Segmentation d'Images Quantiques par Soustraction de Fond}
+	
+	\section{Soustraction de Fond Classique}
+	
+	\subsection{Principe de l'Algorithme}
+	La soustraction de fond classique est la méthode de référence pour la détection de mouvement \cite{stauffer1999}.
+	
+	On définit pour chaque pixel la différence
+	\[
+	D(x,y) = | I_c(x,y) - I_f(x,y) |
+	\]
+	
+	Si \(D(x,y) > T\), le pixel est classé comme avant-plan (blanc), sinon il est classé comme fond (noir).
+	
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.7\textwidth]{images/i1.png}
+		\caption{Schéma de l'algorithme classique de soustraction de fond pour la segmentation de mouvement}
+		\label{fig:soustraction-classique}
+	\end{figure}
+	
+	\subsection{Exemple : Comment ça Marche sur une Image}
+	
+	\textbf{Entrées :}
+	
+	\begin{itemize}
+		\item Image de fond : scène statique (par exemple une pièce sans personne).
+		\item Image courante : même scène avec une personne en mouvement.
+	\end{itemize}
+	
+	\textbf{Processus :}
+	
+	\begin{enumerate}
+		\item Soustraction pixel par pixel.
+		\item Les pixels de mouvement présentent une différence élevée.
+		\item Un seuil est appliqué pour obtenir un masque binaire (0/1).
+	\end{enumerate}
+	
+	\textbf{Sorties :}
+	
+	\begin{itemize}
+		\item Masque montrant exactement où le mouvement s'est produit.
+	\end{itemize}
+	
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.8\textwidth]{images/i2.png}
+		\caption{Exemple de soustraction de fond sur une séquence vidéo : extraction des véhicules en mouvement}
+		\label{fig:soustraction-exemple-video}
+	\end{figure}
+	
+	\subsection{Résultats Classiques (7 Jeux de Données)}
+	
+	\begin{table}[h]
+		\centering
+		\caption{Résultats de la soustraction de fond classique sur 7 jeux de données}
+		\label{tab:resultats-classiques}
+		\begin{tabular}{lcccc}
+			\hline
+			\textbf{Jeu de Données} & \textbf{Temps (ms)} & \textbf{IoU} & \textbf{Accuracy} & \textbf{Qualité} \\
+			\hline
+			simple       & 0{,}12 & 0{,}98 & 0{,}992 & Excellent \\
+			géométrique  & 0{,}15 & 0{,}96 & 0{,}989 & Très bon \\
+			bruit        & 0{,}24 & 0{,}71 & 0{,}843 & Dégradé \\
+			BSD          & 0{,}28 & 0{,}79 & 0{,}876 & Mixte \\
+			médical      & 0{,}22 & 0{,}85 & 0{,}901 & Bon \\
+			mnist        & 0{,}16 & 0{,}88 & 0{,}925 & Bon \\
+			texture      & 0{,}18 & 0{,}92 & 0{,}955 & Robuste \\
+			\hline
+			\textbf{MOYENNE} & \textbf{0{,}19} & \textbf{0{,}87} & \textbf{0{,}911} & \textbf{Solide} \\
+			\hline
+		\end{tabular}
+	\end{table}
+	
+	\textbf{Observations clés :} Temps quasi constant (environ 0{,}19 ms) quel que soit le contenu de l'image, avec une IoU très élevée sur images simples (0{,}98) mais une dégradation sous bruit (0{,}71), ce qui en fait une référence fiable pour la comparaison \cite{stauffer1999}.
+	
+	% =====================================================
+	\section{Représentation Quantique NEQR}
+	
+	\subsection{Performance NEQR}
+	
+	\begin{table}[h]
+		\centering
+		\caption{Performance de la représentation NEQR}
+		\label{tab:neqr-performance}
+		\begin{tabular}{lcc}
+			\hline
+			\textbf{Métrique} & \textbf{Valeur} & \textbf{Note} \\
+			\hline
+			Qubits             & 14      & Fixe \\
+			Profondeur circuit & 1       & Ultra-superficiel \\
+			Temps moyen (ms)   & 2{,}77  & Constant \\
+			Variation temps    & <0{,}5\% & Indépendant contenu \\
+			\hline
+		\end{tabular}
+	\end{table}
+	
+	\textbf{Avantages :} récupération exacte des intensités sans perte d'information, simulation rapide grâce à un circuit peu profond et temps d'exécution constant quel que soit le contenu de l'image \cite{zhang2013neqr,yao2017qipreview}.
+	
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.1\textwidth]{images/i3.png}
+		\caption{Circuit NEQR 8x8 pour la représentation quantique d'image en superposition de positions}
+		\label{fig:neqr-circuit}
+	\end{figure}
+	
+	La figure \ref{fig:neqr-circuit} montre le circuit Qiskit utilisé dans le prototype NEQR 8x8 : les six premiers qubits (q0--q5) codent la position des pixels et reçoivent chacun une porte de Hadamard, préparant une superposition uniforme des 64 coordonnées de l'image, tandis que les huit qubits suivants (q6--q13) codent l'intensité sur 8 bits et restent initialisés dans l'état \(|0\rangle\) dans cette version simplifiée \cite{zhang2013neqr}. Ce circuit, de profondeur 1 et utilisant 14 qubits, sert de base aux mesures de coût de NEQR (nombre de qubits, profondeur, temps de simulation).
+	
+	% =====================================================
+	\section{Représentation Quantique FRQI}
+	
+	\subsection{Performance FRQI}
+	
+	\begin{table}[h]
+		\centering
+		\caption{Performance de la représentation FRQI}
+		\label{tab:frqi-performance}
+		\begin{tabular}{lcc}
+			\hline
+			\textbf{Métrique} & \textbf{Valeur} & \textbf{Note} \\
+			\hline
+			Qubits             & 7       & Minimum \\
+			Profondeur circuit & \(\sim 4876\) & Exponentiel \\
+			Temps moyen (ms)   & 536     & Beaucoup plus lent \\
+			Variation temps    & \(\sim 15\%\) & Dépendant contenu \\
+			\hline
+		\end{tabular}
+	\end{table}
+	
+	\textbf{Avantages :} qubits minimaux (représentation très compacte) \cite{li2010frqi,venegas2010entangled}. \\[0.3em]
+	\textbf{Inconvénients :} circuit de profondeur exponentielle (environ 4876 portes), simulation environ 193 fois plus lente que NEQR, intensités seulement approximatives avec perte d'information et support limité aux opérations partielles \cite{li2010frqi,iliyasuhybrid2013}.
+	
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.48\textwidth]{images/i4.png}
+		\hfill
+		\includegraphics[width=0.48\textwidth]{images/i5.png}
+		\caption{Circuit FRQI 8x8 pour la représentation quantique d'image en superposition de positions}
+		\label{fig:frqi-circuit}
+	\end{figure}
+	
+	La figure \ref{fig:frqi-circuit} montre le circuit FRQI 8x8 généré par Qiskit : bien qu'il n'utilise que 7 qubits (6 de position et 1 qubit couleur), la boucle d'encodage des 64 pixels se traduit, après décomposition des rotations multi-contrôlées, par un circuit très profond (environ 4800 portes) et un schéma visuellement très long, ce qui rend FRQI beaucoup plus coûteux à simuler que NEQR pour un même format 8x8.
+	
+	% =====================================================	
+	\section{Comparaison Directe NEQR vs FRQI}
+	
+	\subsection{Résultats Tête-à-Tête}
+	
+	\begin{table}[H]
+		\centering
+		\caption{Comparaison directe NEQR vs FRQI}
+		\label{tab:neqr-frqi-comparaison}
+		\begin{tabular}{lccc}
+			\hline
+			\textbf{Aspect} & \textbf{NEQR} & \textbf{FRQI} & \textbf{Gagnant} \\
+			\hline
+			Qubits                 & 14        & 7      & FRQI (2x moins) \\
+			Profondeur             & 1         & 4876   & \textbf{NEQR (4876x mieux)} \\
+			Temps simulation       & 2,77 ms   & 536 ms & \textbf{NEQR (193x plus rapide)} \\
+			Récupération intensité & Exacte    & Approximative & NEQR \\
+			Précision opérations   & Exacte    & Partielle      & NEQR \\
+			\hline
+		\end{tabular}
+	\end{table}
+	
+	\subsection{Compromis de Performance}
+	
+	\textbf{Compromis fondamental :}
+	\begin{itemize}
+		\item Pour des images 8x8 sur simulateurs actuels, NEQR domine nettement FRQI en profondeur de circuit et en temps de simulation.
+	\end{itemize}
+	
+	\textbf{Comparaison visuelle :}
+	
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.8\textwidth]{images/i6.png}
+		\caption{Comparaison des temps de simulation des représentations quantiques NEQR et FRQI}
+		\label{fig:temps-neqr-frqi}
+	\end{figure}
+	
+	Ration : FRQI/NEQR = 536/2{,}77 \(\approx 193\) fois de différence.
+	
+	\subsection{Pourquoi NEQR Gagne pour Cette Application}
+	
+	NEQR offre une simulation environ 193 fois plus rapide avec une récupération exacte des intensités, tout en reposant sur des circuits peu profonds qui limitent les sources de bruit et demandent 14 qubits, encore réalistes à court terme pour le hardware quantique \cite{zhang2013neqr,yao2017qipreview}.
+	
+	% =====================================================
+	\section{Algorithme Quantum Background Difference (QBGD)}
+	
+	\subsection{Qu'est-ce que QBGD ?}
+	
+	QBGD applique la soustraction de fond dans un circuit quantique : 
+	\begin{enumerate}
+		\item Encoder les images de fond et courante en superposition quantique.
+		\item Mesurer la différence via des portes quantiques.
+		\item Extraire un masque d'avant-plan.
+	\end{enumerate}
+	
+	Promesse théorique : complexité \(O(\log n)\), logarithmique, plus rapide que la version classique linéaire \cite{wang2023qbgd}.
+	
+	\subsection{Comment QBGD Marche sur une Image (Conceptuellement)}
+	
+	Les deux images (fond et courante) sont d'abord encodées sur les mêmes qubits ; les qubits de position comparent en parallèle chaque pixel, un qubit « différence » s'active uniquement là où les intensités changent, et la mesure finale de ce qubit fournit un masque d'avant-plan classique \cite{wang2023qbgd}.
+	
+	\subsection{Implémentation NEQR + QBGD}
+	
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.9\textwidth]{images/i7.png}
+		\caption{Chaîne complète de traitement NEQR+QBGD pour la génération d'un masque de segmentation 8x8}
+		\label{fig:neqr-qbgd-chaine}
+	\end{figure}
+	
+	\subsection{Résultats NEQR + QBGD (Ce Qui S'est Réellement Produit)}
+	
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=\textwidth]{images/i8.png}
+		\caption{Comparaison des masques classiques et pseudo-masques quantiques sur différentes images 8x8}
+		\label{fig:neqr-qbgd-masques}
+	\end{figure}
+	
+	\subsection{Qualité Segmentation}
+	
+	\begin{table}[H]
+		\centering
+		\caption{Qualité de segmentation NEQR+QBGD sur différents jeux de données}
+		\label{tab:qualite-segmentation}
+		\begin{tabular}{lccc}
+			\hline
+			\textbf{Jeu de Données} & \textbf{IoU} & \textbf{Accuracy} & \textbf{Statut} \\
+			\hline
+			simple       & 0,063 & 0,063 & Aléatoire \\
+			géométrique  & 0,068 & 0,065 & Aléatoire \\
+			bruit        & 0,072 & 0,070 & Aléatoire \\
+			BSD          & 0,055 & 0,058 & Pire \\
+			médical      & 0,078 & 0,075 & Légèrement mieux \\
+			mnist        & 0,061 & 0,062 & Aléatoire \\
+			texture      & 0,067 & 0,066 & Aléatoire \\
+			\hline
+			\textbf{MOYENNE} & \textbf{0,066} & \textbf{0,065} & \textbf{Preuve concept} \\
+			\hline
+		\end{tabular}
+	\end{table}
+	
+	\textbf{Observation critique :}
+	IoU moyen 0,066 \(\approx\) devinage aléatoire (attendu \(\approx 0,05\)), masques uniformes (tout blanc ou tout noir) et zéro localisation spatiale (pas d'information pixel par pixel).
+	
+	\subsection{Pourquoi QBGD a Échoué pour Segmentation}
+	
+	\textbf{Le problème :}
+	\begin{enumerate}
+		\item La mesure fait s'effondrer la superposition quantique et ne fournit qu'un résultat binaire global.
+		\item Aucune information spatiale n'est préservée.
+		\item Le qubit de différence donne seulement OUI/NON, pas un masque pixel par pixel.
+		\item Le parallélisme quantique est « aplati » en un seul bit à la mesure.
+	\end{enumerate}
+	
+	\textbf{Résultat :} l'algorithme détecte la présence de mouvement global, mais ne parvient pas à segmenter spatialement l'image.
+	
+	% =====================================================
+	\section{Implémentation FRQI + QBGD}
+	
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.7\textwidth]{images/i9.png}
+		\caption{Chaîne complète de traitement FRQI+QBGD pour la génération d'un masque de segmentation 8x8}
+		\label{fig:frqi-qbgd-chaine}
+	\end{figure}
+	
+	\subsection{Résultats et Observations}
+	
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=\textwidth]{images/i10.png}
+		\caption{Comparaison des masques classiques et pseudo-masques quantiques sur différentes images 8x8}
+		\label{fig:frqi-qbgd-masques}
+	\end{figure}
+	
+	FRQI encode les niveaux de gris dans les amplitudes via des rotations Ry, tandis que NEQR les encode dans des états de base ; des erreurs accumulées sur plusieurs qubits peuvent donc conduire le circuit à décider « tout objet » ou « tout fond », produisant un masque entièrement blanc ou entièrement noir \cite{venegas2010entangled,iliyasuhybrid2013,yuan2016sqr}.
+	
+	% =====================================================
+	\section{Comparaison Complète : Toutes les Méthodes}
+	
+	\subsection{Tableau de Performance Globale}
+	
+	\begin{table}[H]
+		\centering
+		\caption{Performance globale des méthodes de segmentation}
+		\label{tab:perf-globale}
+		\begin{tabular}{lccccc}
+			\hline
+			\textbf{Méthode}   & \textbf{Qubits} & \textbf{Profondeur} & \textbf{Temps (ms)} & \textbf{IoU} & \textbf{Spatial ?} \\
+			\hline
+			Classique    & 0  & 0     & \textbf{0,19}  & \textbf{0,87} & Oui \\
+			NEQR repr    & 14 & 1     & 2,77           & --            & --  \\
+			FRQI repr    & 7  & 4876  & 536            & --            & --  \\
+			NEQR+QBGD    & 7  & 2     & 28             & 0,066         & Non \\
+			FRQI+QBGD    & 8  & 4876  & 380            & 0,065         & Non \\
+			\hline
+		\end{tabular}
+	\end{table}
+	
+	\subsection{Gagnant par Catégorie}
+	
+	Les méthodes classiques gardent la meilleure qualité (IoU 0,87) et la meilleure vitesse (0,19 ms), tandis que toutes les variantes quantiques testées sont à la fois beaucoup moins précises (IoU \(\approx 0{,}065\)–0{,}066) et bien plus lentes (de 14x à 2800x), sans atteindre la localisation pixel-par-pixel \cite{stauffer1999,zhang2013neqr,li2010frqi,wang2023qbgd}.
+	
+	% =====================================================
+	\section{Analyse Critique}
+	
+	\textbf{Représentation à garder :} NEQR, car FRQI n'apporte pas de meilleure qualité de segmentation et augmente fortement la profondeur et le temps de simulation \cite{zhang2013neqr,li2010frqi,iliyasuhybrid2013,yao2017qipreview}.
+	
+	\textbf{Amélioration 1 – Décision par pixel :} remplacer le qubit de différence global par une décision prise pour chaque pixel, en exploitant directement les 8 bits d'intensité NEQR afin de construire un véritable masque binaire pixel-par-pixel.
+	
+	\textbf{Amélioration 2 – Seuil adaptatif :} utiliser un seuil de décision adapté au contenu de chaque image (au lieu d'un seuil fixe), toujours dans le cadre de la soustraction de fond.
+	
+	\textbf{Amélioration 3 – Post-traitement classique :} appliquer un léger post-traitement classique (morphologie, filtrage) sur le masque issu du QBGD pour nettoyer le résultat et améliorer l'IoU \cite{iliyasuhybrid2013,yuan2016sqr}.
+	
+	% =====================================================
+	\section{Conclusions}
+	
+	La segmentation par soustraction de fond classique reste largement supérieure aux versions quantiques testées, tant en qualité (IoU \(\approx 0{,}87\)) qu'en temps d'exécution (\(\approx 0{,}19\) ms) \cite{stauffer1999}. Les représentations quantiques montrent néanmoins que NEQR est nettement plus adaptée que FRQI pour ce type d'algorithme, avec des circuits beaucoup plus peu profonds et une simulation environ 193 fois plus rapide \cite{zhang2013neqr,li2010frqi,yao2017qipreview}. Dans l'état actuel du matériel et des implémentations, l'algorithme QBGD appliqué à NEQR doit donc être considéré comme une preuve de concept prometteuse, mais encore loin d'être compétitif face aux méthodes classiques pour une segmentation d'images exploitable en pratique \cite{wang2023qbgd,iliyasuhybrid2013}.
+	
+	% =====================================================
+	
+	\bibliographystyle{ieeetr}
+	\bibliography{biblio}
+	
+\end{document}
+
+

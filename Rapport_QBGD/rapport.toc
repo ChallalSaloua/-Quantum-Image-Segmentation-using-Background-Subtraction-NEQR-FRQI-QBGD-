@@ -1,0 +1,28 @@
+\babel@toc {french}{}\relax 
+\contentsline {chapter}{\numberline {1}Segmentation d'Images Quantiques par Soustraction de Fond}{2}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Soustraction de Fond Classique}{2}{section.1.1}%
+\contentsline {subsection}{\numberline {1.1.1}Principe de l'Algorithme}{2}{subsection.1.1.1}%
+\contentsline {subsection}{\numberline {1.1.2}Exemple : Comment ça Marche sur une Image}{2}{subsection.1.1.2}%
+\contentsline {subsection}{\numberline {1.1.3}Résultats Classiques (7 Jeux de Données)}{3}{subsection.1.1.3}%
+\contentsline {section}{\numberline {1.2}Représentation Quantique NEQR}{4}{section.1.2}%
+\contentsline {subsection}{\numberline {1.2.1}Performance NEQR}{4}{subsection.1.2.1}%
+\contentsline {section}{\numberline {1.3}Représentation Quantique FRQI}{5}{section.1.3}%
+\contentsline {subsection}{\numberline {1.3.1}Performance FRQI}{5}{subsection.1.3.1}%
+\contentsline {section}{\numberline {1.4}Comparaison Directe NEQR vs FRQI}{5}{section.1.4}%
+\contentsline {subsection}{\numberline {1.4.1}Résultats Tête-à-Tête}{5}{subsection.1.4.1}%
+\contentsline {subsection}{\numberline {1.4.2}Compromis de Performance}{6}{subsection.1.4.2}%
+\contentsline {subsection}{\numberline {1.4.3}Pourquoi NEQR Gagne pour Cette Application}{6}{subsection.1.4.3}%
+\contentsline {section}{\numberline {1.5}Algorithme Quantum Background Difference (QBGD)}{6}{section.1.5}%
+\contentsline {subsection}{\numberline {1.5.1}Qu'est-ce que QBGD ?}{6}{subsection.1.5.1}%
+\contentsline {subsection}{\numberline {1.5.2}Comment QBGD Marche sur une Image (Conceptuellement)}{6}{subsection.1.5.2}%
+\contentsline {subsection}{\numberline {1.5.3}Implémentation NEQR + QBGD}{7}{subsection.1.5.3}%
+\contentsline {subsection}{\numberline {1.5.4}Résultats NEQR + QBGD (Ce Qui S'est Réellement Produit)}{7}{subsection.1.5.4}%
+\contentsline {subsection}{\numberline {1.5.5}Qualité Segmentation}{8}{subsection.1.5.5}%
+\contentsline {subsection}{\numberline {1.5.6}Pourquoi QBGD a Échoué pour Segmentation}{8}{subsection.1.5.6}%
+\contentsline {section}{\numberline {1.6}Implémentation FRQI + QBGD}{8}{section.1.6}%
+\contentsline {subsection}{\numberline {1.6.1}Résultats et Observations}{9}{subsection.1.6.1}%
+\contentsline {section}{\numberline {1.7}Comparaison Complète : Toutes les Méthodes}{9}{section.1.7}%
+\contentsline {subsection}{\numberline {1.7.1}Tableau de Performance Globale}{9}{subsection.1.7.1}%
+\contentsline {subsection}{\numberline {1.7.2}Gagnant par Catégorie}{9}{subsection.1.7.2}%
+\contentsline {section}{\numberline {1.8}Analyse Critique}{9}{section.1.8}%
+\contentsline {section}{\numberline {1.9}Conclusions}{10}{section.1.9}%

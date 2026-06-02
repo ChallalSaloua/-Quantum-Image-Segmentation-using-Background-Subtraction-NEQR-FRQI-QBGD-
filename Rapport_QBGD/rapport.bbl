@@ -1,0 +1,42 @@
+\begin{thebibliography}{1}
+
+\bibitem{stauffer1999}
+C.~Stauffer and W.~E.~L. Grimson, ``Adaptive background mixture models for
+  real-time tracking,'' in {\em Proceedings of the IEEE Conference on Computer
+  Vision and Pattern Recognition}, vol.~2, p.~246, 1999.
+
+\bibitem{zhang2013neqr}
+Y.~Zhang, S.~Lu, K.~Gao, and M.~Wang, ``Neqr: A novel enhanced quantum
+  representation of digital images,'' {\em Quantum Information Processing},
+  vol.~12, no.~8, pp.~2833--2860, 2013.
+
+\bibitem{yao2017qipreview}
+X.~W. Yao {\em et~al.}, ``Quantum image processing and its applications,'' {\em
+  Proceedings of the IEEE}, vol.~105, no.~12, pp.~2269--2287, 2017.
+
+\bibitem{li2010frqi}
+P.~Li, A.~Liu, and A.~Zhou, ``The quantum image processing and its
+  applications,'' in {\em Advances in Power System Control, Operation and
+  Management}, pp.~1--6, 2010.
+
+\bibitem{venegas2010entangled}
+S.~E. Venegas-Andraca and J.~L. Ball, ``Processing images in entangled quantum
+  systems,'' {\em Quantum Information Processing}, vol.~9, no.~1, pp.~1--11,
+  2010.
+
+\bibitem{iliyasuhybrid2013}
+A.~M. Iliyasu, ``Towards hybrid classical-quantum algorithms for image
+  processing,'' {\em Journal of Emerging Technologies in Web Intelligence},
+  vol.~5, no.~2, pp.~194--203, 2013.
+
+\bibitem{wang2023qbgd}
+X.~Wang, F.~Liu, K.~Pan, S.~Guo, S.~Liu, and K.~Du, ``A quantum segmentation
+  algorithm based on background-difference method for neqr image,'' {\em
+  Quantum Information Processing}, vol.~22, no.~9, p.~304, 2023.
+
+\bibitem{yuan2016sqr}
+S.~Yuan, X.~Mao, Y.~Xue, L.~Chen, and K.~Hirota, ``Sqr: A simple quantum
+  representation of infrared images,'' {\em IEEE Transactions on Image
+  Processing}, vol.~25, no.~8, pp.~3167--3178, 2016.
+
+\end{thebibliography}
